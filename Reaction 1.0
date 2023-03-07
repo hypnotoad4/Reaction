@@ -1,0 +1,138 @@
+from tkinter import *
+from random import *
+from time import *
+
+class Game:
+    def __init__(self):
+        self.points = 0
+        self.countdown_mo = 120
+        self.countdown_mt = 120
+        self.countdown_c = 120
+        self.window = Tk()
+        self.clr = [
+            'snow','ghost white','gainsboro','linen','papaya whip','peach puff','navajo white','lemon chiffon','mint cream',
+            'lavender','lavender blush','misty rose','dark slate gray','dim gray','slate gray','gray','midnight blue','navy',
+            'cornflower blue','slate blue','medium blue','royal blue','dodger blue','deep sky blue','steel blue','cadet blue',
+            'cyan','medium aquamarine','sea green','dark green','dark olive green','pale green','lawn green','green yellow',
+            'forest green','olive drab','dark khaki','khaki','yellow','gold','goldenrod','light goldenrod','rosy brown','coral',
+            'salmon','orange','dark orange','tomato','red','orange red','deep pink','hot pink','pink','maroon','dark orchid',
+            'medium violet red','dark violet','purple','medium purple','thistle','snow2','snow4','seashell4','AntiqueWhite1',
+            'AntiqueWhite2','AntiqueWhite3','AntiqueWhite4','ivory4','azure3','SlateBlue1','SlateBlue3','RoyalBlue2','blue4',
+            'RoyalBlue4','SteelBlue4','SkyBlue2','LightSkyBlue4','cyan3','DarkSeaGreen1','DarkSeaGreen4','SeaGreen2','tan2',
+            'chocolate3'
+            ]
+    def timer(self):
+        self.countdown_mo -= 1
+        self.countdown_mt -= 1
+        self.countdown_c -= 1
+        print(self.countdown_mo, self.countdown_mt, self.countdown_c)
+    def colore(self):
+        if self.points%10 == 0:
+            for i in range(3):
+                self.b_one["bg"]=choice(self.clr)
+                self.b_one["fg"]=choice(self.clr)
+                self.b_two["bg"]=choice(self.clr)
+                self.b_two["fg"]=choice(self.clr)
+                self.btn["bg"]=choice(self.clr)
+                self.btn["fg"]=choice(self.clr)
+    def close_window(self, event=None): self.window.destroy()
+    def curs(self, event):
+        self.label_points['text'] = self.points
+        x = randrange(30, 1700)
+        y = randrange(60, 1020)
+        self.btn.place(x=x, y=y)
+        self.colore()
+        self.countdown_c = 120
+    def move_one(self, event):
+        self.b_one.place(x=randint(30, 1780),y=randint(60, 1020))
+        self.points += 1
+        self.label_points['text'] = self.points
+        self.colore()
+        self.countdown_mo = 120
+    def move_two(self, event):
+        self.countdown_mt = 120
+        self.b_two.place(x=randint(30, 1780),y=randint(60, 1020))
+        self.points += 1
+        self.label_points['text'] = self.points
+        self.colore()
+    def close_root(self,event=None):
+        self.root.destroy()
+    def lose(self,event):
+        self.window.destroy()
+        self.root = Tk()
+        self.root.title("Реакция")
+        self.root.geometry('1920x1080')
+        self.root.resizable(width=False,height=False)
+        self.root.wm_attributes("-fullscreen", True)
+        self.root.configure(bg="black")
+        self.label_score_lose = Label(text=f'YOU SCORE: {self.points}', font=('Arial',45),bg="black", fg='red')
+        self.label_score_lose.place(x=720, y=330)
+        self.label_lose = Label(text='YOU LOSE', font=('Arial',45),bg="black", fg='red')
+        self.label_lose.place(x=770, y=410)
+        self.b_root_close = Button(text='EXIT', font=('Arial',30),bg="red", fg='black')
+        self.b_root_close.configure(command=self.close_root)
+        self.b_root_close.place(x=870, y=500)
+        self.root.bind("<Escape>",self.close_root)
+        self.root.mainloop()
+    def window_create(self):
+        self.window.title("REACTOIN")
+        self.window.geometry('1920x1080')
+        self.window.resizable(width=False,height=False)
+        self.window.wm_attributes("-fullscreen", True)
+        self.window.configure(bg="deep sky blue")
+        self.window.bind("<Escape>",self.close_window)
+    def lbl_create(self):
+        self.label_points = Label(text=self.points, font=('Arial',20),bg="deep sky blue", fg='black')
+        self.label_points.place(x=10, y=5)
+        self.b_window_close = Button(text='CLOSE', font=('Arial',15),bg="gray15", fg='white')
+        self.b_window_close.configure(command=self.close_window)
+        self.b_window_close.pack(anchor=NE)
+        self.b_one = Button(text='LMB', font=('Arial', 14), fg='black')
+        self.b_one.place(x=890,y=465)
+        self.b_one.bind('<Button-1>',self.move_one)
+        self.b_one.bind('<Button-3>',self.lose)
+        self.b_two = Button(text='RMB', font=('Arial', 14), fg='white', bg='brown')
+        self.b_two.place(x=300,y=465)
+        self.btn = Button(text='ENTER', font=('Arial', 14), bg='green4', fg='white')
+        self.btn.place(x=1600,y=465)
+    def start(self):
+        self.window.update()
+        self.sec_mo = str(self.countdown_mo//30)
+        self.sec_mt = str(self.countdown_mt//30)
+        self.sec_c = str(self.countdown_c//30)
+        self.label_lmb = Label(text=f"LMB IS ACTIVE {self.sec_mo}", font=('Arial',20), bg="orange", fg="black")
+        self.label_rmb = Label(text="RMB IS NOT ACTIVE", font=('Arial',20), bg="deep sky blue", fg="gray")
+        self.label_enter = Label(text="ENTER IS NOT ACTIVE", font=('Arial',20), bg="deep sky blue", fg="gray")
+        self.label_lmb.place(x=130, y=5, width=300)
+        self.label_rmb.place(x=760, y=5, width=300)
+        self.label_enter.place(x=1400, y=5, width=300)
+        self.window.after(10, self.timer())
+        if self.points == 21:
+            self.countdown_mt = 120
+        if self.points == 31:
+            self.countdown_c = 120
+        if self.points > 20:
+            self.label_rmb.config(text=f"RMB IS ACTIVE {self.sec_mt}", font=('Arial',20), bg="orange", fg="black")
+            self.b_two.config(state='normal')
+            self.b_two.bind('<Button-3>', self.move_two)
+            self.b_two.bind('<Button-1>', self.lose)
+        else:
+            self.b_two.config(state='disabled')
+        if self.points > 30:
+            self.label_enter.config(text=f"ENTER IS ACTIVE {self.sec_c}", font=('Arial',20), bg="orange", fg="black")
+            self.btn.config(state='normal')
+            self.btn.bind('<Enter>', self.curs)
+        else:
+            self.btn.config(state='disabled')
+        if self.countdown_mo <= 0:
+            self.lose(event=1)
+        if self.countdown_mt <= 0 and self.points > 20:
+            self.lose(event=1)
+        if self.countdown_c <= 0 and self.points > 30:
+            self.lose(event=1)
+
+g = Game()
+g.window_create()
+g.lbl_create()
+while True:
+    g.start()
